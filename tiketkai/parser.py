@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import  urllib.request
 
 def getLastDate(soupObj):
     objList = None
@@ -18,10 +19,25 @@ def getLastDate(soupObj):
         print("Webpage structure not found. Quitting...")
         return None
 
+def fetchPage(url):
+    # add a header to define a custon User-Ageny
+    headers = { 'User-Agent' : 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)' }
 
-soup = BeautifulSoup(open("tiketkai.html"))
+    try:
+        req = urllib.request.Request(url, None, headers)
+        data = urllib.request.urlopen(req)
+        return data
+    except:
+        return None
+    
+#our url
+url = "https://tiket.kereta-api.co.id/"
 
-mydate = getLastDate(soup)
+page = fetchPage(url)
+mydate = None
+if page is not None:
+    soup = BeautifulSoup(page.read())
+    mydate = getLastDate(soup)
 
 if mydate is None:
     print("something error. Sorry")
